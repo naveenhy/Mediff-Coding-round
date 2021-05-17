@@ -1,0 +1,72 @@
+using System;
+
+ 
+
+namespace ChangeDirectory
+{
+      public class Path
+      {
+        public string CurrentPath { get; private set; }
+
+        public Path(string path)
+        {
+            this.CurrentPath = path;
+        }
+
+        public Path Cd(string newPath)
+        {
+            String[] newP = newPath.Split('/');
+            String[] oldP = CurrentPath.Split('/');
+            int lnCount = 0;
+            foreach (string str in newP)
+            {
+                if (str.Equals(".."))
+                {
+                    lnCount++;
+                }
+            }
+
+            int len = oldP.Length;
+            string strOut = "";
+            for (int i = 0; i < len - lnCount; i++)
+            {
+                strOut = strOut + oldP[i] + "/";
+            }
+
+            len = newP.Length;
+            for (int i = 0; i < len; i++)
+            {
+                if (!newP[i].Equals(".."))
+                {
+                    strOut = strOut + newP[i] + "/";
+                }
+            }
+            CurrentPath = strOut.Substring(0, strOut.Length - 1);
+            Console.WriteLine(CurrentPath);
+            if (CurrentPath.IndexOf("/") < 0)
+                throw new Exception("Directory not found");
+            return this;
+        }
+    }
+
+
+   public class Program
+   {
+        static void Main(string[] args)
+        {
+            Path path = new Path("/a/b/c/d");
+            Console.WriteLine(path.Cd("../x").CurrentPath);
+            Console.Read();
+        }
+    }
+}
+
+Compilation output
+'ConsoleApp1.exe' (CLR v4.0.30319: DefaultDomain): Loaded 'C:\windows\Microsoft.Net\assembly\GAC_32\mscorlib\v4.0_4.0.0.0__b77a5c561934e089\mscorlib.dll'. Skipped loading symbols. Module is optimized and the debugger option 'Just My Code' is enabled.
+'ConsoleApp1.exe' (CLR v4.0.30319: DefaultDomain): Loaded 'C:\Users\naveen.h.y\source\repos\ConsoleApp1\ConsoleApp1\bin\Debug\ConsoleApp1.exe'. Symbols loaded.
+
+
+Output
+/a/b/c/x
+/a/b/c/x
+
